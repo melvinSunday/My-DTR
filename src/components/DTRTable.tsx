@@ -22,11 +22,11 @@ export default function DTRTable({ year, month }: DTRTableProps) {
   const [entries, setEntries] = useState<Record<string, DTREntry>>({});
   const [loading, setLoading] = useState(true);
 
-  // modern input styles centralized
+  // modern input styles centralized (extra right padding for clear button)
   const baseInputClass =
-    "w-full pr-8 bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-700 rounded-lg shadow-xs";
+    "w-full pr-10 bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-700 rounded-lg shadow-xs";
   const disabledInputClass =
-    "w-full pr-8 bg-gray-100 dark:bg-neutral-800 text-gray-400 cursor-not-allowed border border-gray-200 dark:border-neutral-800 shadow-none";
+    "w-full pr-10 bg-gray-100 dark:bg-neutral-800 text-gray-400 cursor-not-allowed border border-gray-200 dark:border-neutral-800 shadow-none";
 
   useEffect(() => {
     loadEntries();
@@ -381,7 +381,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     <button
                       type="button"
                       onClick={() => clearField(date, "amArrival")}
-                      className="absolute right-1.5 top-[1.63rem] inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute inset-y-0 right-2 mt-5 inline-flex h-6 w-6 items-center justify-center rounded-md "
                       aria-label="Clear Arrival 1"
                     >
                       <X className="size-3.5" />
@@ -410,7 +410,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     <button
                       type="button"
                       onClick={() => clearField(date, "amDeparture")}
-                      className="absolute right-1.5 top-[1.63rem] inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute inset-y-0 right-2 mt-5 inline-flex h-6 w-6 items-center justify-center rounded-md "
                       aria-label="Clear Departure 1"
                     >
                       <X className="size-3.5" />
@@ -439,7 +439,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     <button
                       type="button"
                       onClick={() => clearField(date, "pmArrival")}
-                      className="absolute right-1.5 top-[1.63rem] inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute inset-y-0 right-2 mt-5 inline-flex h-6 w-6 items-center justify-center rounded-md "
                       aria-label="Clear Arrival 2"
                     >
                       <X className="size-3.5" />
@@ -468,7 +468,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     <button
                       type="button"
                       onClick={() => clearField(date, "pmDeparture")}
-                      className="absolute right-1.5 top-[1.63rem] inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute inset-y-0 right-2 mt-5 inline-flex h-6 w-6 items-center justify-center rounded-md"
                       aria-label="Clear Departure 2"
                     >
                       <X className="size-3.5" />
@@ -502,7 +502,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     <button
                       type="button"
                       onClick={() => clearField(date, "overtimeHours")}
-                      className="absolute right-1.5 top-[1.63rem] inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute inset-y-0 right-2 mt-5 inline-flex h-6 w-6 items-center justify-center rounded-md "
                       aria-label="Clear OT Hours"
                     >
                       <X className="size-3.5" />
@@ -536,7 +536,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     <button
                       type="button"
                       onClick={() => clearField(date, "overtimeMinutes")}
-                      className="absolute right-1.5 top-[1.63rem] inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute inset-y-0 right-2 mt-5 inline-flex h-6 w-6 items-center justify-center rounded-md "
                       aria-label="Clear OT Minutes"
                     >
                       <X className="size-3.5" />
