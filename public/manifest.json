@@ -3,17 +3,56 @@
   "short_name": "DTR App",
   "description": "Offline-first Daily Time Record web application for tracking work hours",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#f9fafb",
   "theme_color": "#8C1007",
   "orientation": "portrait-primary",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/mydtr.jpg",
       "sizes": "any",
-      "type": "image/jpg"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/mydtr.ico",
+      "sizes": "16x16 32x32 48x48",
+      "type": "image/x-icon"
     }
   ],
   "categories": ["productivity", "business", "utilities"],
-  "lang": "en-US"
+  "lang": "en-US",
+  "dir": "ltr",
+  "shortcuts": [
+    {
+      "name": "Today's DTR",
+      "short_name": "Today",
+      "description": "View today's time record",
+      "url": "/",
+      "icons": [
+        {
+          "src": "/mydtr.ico",
+          "sizes": "32x32"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/mydtr.jpg",
+      "sizes": "any",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "DTR App main interface"
+    }
+  ],
+  "related_applications": [],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
 }

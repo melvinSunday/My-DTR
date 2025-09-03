@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { DTREntry, saveDTREntry, getDTREntriesForMonth } from "@/lib/db";
+import { queueOfflineAction } from "@/lib/offline-sync";
 import {
   isWeekend,
   formatDate,
@@ -83,8 +84,16 @@ export default function DTRTable({ year, month }: DTRTableProps) {
     // save to indexeddb
     try {
       await saveDTREntry(updatedEntry);
+
+      // Queue for offline sync if needed
+      if (!navigator.onLine) {
+        queueOfflineAction("save", updatedEntry);
+      }
     } catch (error) {
       console.error("Error saving entry:", error);
+
+      // Always queue if save fails (could be offline)
+      queueOfflineAction("save", updatedEntry);
     }
   };
 
@@ -134,8 +143,16 @@ export default function DTRTable({ year, month }: DTRTableProps) {
 
     try {
       await saveDTREntry(resetEntry);
+
+      // Queue for offline sync if needed
+      if (!navigator.onLine) {
+        queueOfflineAction("save", resetEntry);
+      }
     } catch (error) {
       console.error("Error clearing day:", error);
+
+      // Always queue if save fails (could be offline)
+      queueOfflineAction("save", resetEntry);
     }
   };
 
