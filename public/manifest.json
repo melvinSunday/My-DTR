@@ -1,0 +1,19 @@
+{
+  "name": "Daily Time Record - DTR App",
+  "short_name": "DTR App",
+  "description": "Offline-first Daily Time Record web application for tracking work hours",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["productivity", "business", "utilities"],
+  "lang": "en-US"
+}
