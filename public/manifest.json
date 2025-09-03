@@ -5,13 +5,13 @@
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f9fafb",
-  "theme_color": "#2563eb",
+  "theme_color": "#8C1007",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/mydtr.ico",
+      "src": "/mydtr.jpg",
       "sizes": "any",
-      "type": "image/x-icon"
+      "type": "image/jpg"
     }
   ],
   "categories": ["productivity", "business", "utilities"],

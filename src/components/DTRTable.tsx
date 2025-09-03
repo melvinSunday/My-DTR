@@ -23,9 +23,9 @@ export default function DTRTable({ year, month }: DTRTableProps) {
 
   // modern input styles centralized
   const baseInputClass =
-    "bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-700 rounded-lg shadow-xs";
+    "w-full pr-10 bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-700 rounded-lg shadow-xs";
   const disabledInputClass =
-    "bg-gray-100 dark:bg-neutral-800 text-gray-400 cursor-not-allowed border border-gray-200 dark:border-neutral-800 shadow-none";
+    "w-full pr-10 bg-gray-100 dark:bg-neutral-800 text-gray-400 cursor-not-allowed border border-gray-200 dark:border-neutral-800 shadow-none";
 
   useEffect(() => {
     loadEntries();
@@ -163,59 +163,67 @@ export default function DTRTable({ year, month }: DTRTableProps) {
         </td>
 
         {/* arrival 1 */}
-        <td className="px-4 py-3">
+        <td className="px-4 py-3 min-w-0">
           <Input
             type="time"
+            step="60"
             value={entry?.amArrival || ""}
             onChange={(e) =>
               handleInputChange(date, "amArrival", e.target.value)
             }
             disabled={isWeekendDay}
             className={isWeekendDay ? disabledInputClass : baseInputClass}
+            style={{ colorScheme: "dark light" }}
           />
         </td>
 
         {/* departure 1 */}
-        <td className="px-4 py-3">
+        <td className="px-4 py-3 min-w-0">
           <Input
             type="time"
+            step="60"
             value={entry?.amDeparture || ""}
             onChange={(e) =>
               handleInputChange(date, "amDeparture", e.target.value)
             }
             disabled={isWeekendDay}
             className={isWeekendDay ? disabledInputClass : baseInputClass}
+            style={{ colorScheme: "dark light" }}
           />
         </td>
 
         {/* arrival 2 */}
-        <td className="px-4 py-3">
+        <td className="px-4 py-3 min-w-0">
           <Input
             type="time"
+            step="60"
             value={entry?.pmArrival || ""}
             onChange={(e) =>
               handleInputChange(date, "pmArrival", e.target.value)
             }
             disabled={isWeekendDay}
             className={isWeekendDay ? disabledInputClass : baseInputClass}
+            style={{ colorScheme: "dark light" }}
           />
         </td>
 
         {/* departure 2 */}
-        <td className="px-4 py-3">
+        <td className="px-4 py-3 min-w-0">
           <Input
             type="time"
+            step="60"
             value={entry?.pmDeparture || ""}
             onChange={(e) =>
               handleInputChange(date, "pmDeparture", e.target.value)
             }
             disabled={isWeekendDay}
             className={isWeekendDay ? disabledInputClass : baseInputClass}
+            style={{ colorScheme: "dark light" }}
           />
         </td>
 
         {/* overtime hours */}
-        <td className="px-4 py-3">
+        <td className="px-4 py-3 min-w-0">
           <Input
             type="number"
             min={0}
@@ -235,7 +243,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
         </td>
 
         {/* overtime minutes */}
-        <td className="px-4 py-3">
+        <td className="px-4 py-3 min-w-0">
           <Input
             type="number"
             min={0}
@@ -324,23 +332,24 @@ export default function DTRTable({ year, month }: DTRTableProps) {
               }`}
             >
               <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <span className="text-lg font-semibold text-gray-900 dark:text-white">
                     {day}
                   </span>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm text-muted-foreground truncate">
                     {dayOfWeek}
                   </span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div className="relative">
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <div className="grid grid-cols-2 gap-3 max-[400px]:grid-cols-1">
+                <div className="relative min-w-0">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1 truncate">
                     A.M. Arrival
                   </label>
                   <Input
                     type="time"
+                    step="60"
                     value={entry?.amArrival || ""}
                     onChange={(e) =>
                       handleInputChange(date, "amArrival", e.target.value)
@@ -349,12 +358,13 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     className={
                       isWeekendDay ? disabledInputClass : baseInputClass
                     }
+                    style={{ colorScheme: "dark light" }}
                   />
                   {!isWeekendDay && entry?.amArrival && (
                     <button
                       type="button"
                       onClick={() => clearField(date, "amArrival")}
-                      className="absolute right-1.5 top-7 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute right-2 top-[2.3rem] -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
                       aria-label="Clear Arrival 1"
                     >
                       <X className="size-3.5" />
@@ -362,12 +372,13 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                   )}
                 </div>
 
-                <div className="relative">
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <div className="relative min-w-0">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1 truncate">
                     A.M. Departure
                   </label>
                   <Input
                     type="time"
+                    step="60"
                     value={entry?.amDeparture || ""}
                     onChange={(e) =>
                       handleInputChange(date, "amDeparture", e.target.value)
@@ -376,12 +387,13 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     className={
                       isWeekendDay ? disabledInputClass : baseInputClass
                     }
+                    style={{ colorScheme: "dark light" }}
                   />
                   {!isWeekendDay && entry?.amDeparture && (
                     <button
                       type="button"
                       onClick={() => clearField(date, "amDeparture")}
-                      className="absolute right-1.5 top-[1.6rem] inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute right-2 top-[2.3rem]  -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
                       aria-label="Clear Departure 1"
                     >
                       <X className="size-3.5" />
@@ -389,12 +401,13 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                   )}
                 </div>
 
-                <div className="relative">
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <div className="relative min-w-0">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1 truncate">
                     P.M. Arrival
                   </label>
                   <Input
                     type="time"
+                    step="60"
                     value={entry?.pmArrival || ""}
                     onChange={(e) =>
                       handleInputChange(date, "pmArrival", e.target.value)
@@ -403,12 +416,13 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     className={
                       isWeekendDay ? disabledInputClass : baseInputClass
                     }
+                    style={{ colorScheme: "dark light" }}
                   />
                   {!isWeekendDay && entry?.pmArrival && (
                     <button
                       type="button"
                       onClick={() => clearField(date, "pmArrival")}
-                      className="absolute right-1.5 top-7 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute right-2 top-[2.3rem]  -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
                       aria-label="Clear Arrival 2"
                     >
                       <X className="size-3.5" />
@@ -416,12 +430,13 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                   )}
                 </div>
 
-                <div className="relative">
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <div className="relative min-w-0">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1 truncate">
                     P.M. Departure
                   </label>
                   <Input
                     type="time"
+                    step="60"
                     value={entry?.pmDeparture || ""}
                     onChange={(e) =>
                       handleInputChange(date, "pmDeparture", e.target.value)
@@ -430,12 +445,13 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     className={
                       isWeekendDay ? disabledInputClass : baseInputClass
                     }
+                    style={{ colorScheme: "dark light" }}
                   />
                   {!isWeekendDay && entry?.pmDeparture && (
                     <button
                       type="button"
                       onClick={() => clearField(date, "pmDeparture")}
-                      className="absolute right-1.5 top-7 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute right-2 top-[2.3rem]  -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
                       aria-label="Clear Departure 2"
                     >
                       <X className="size-3.5" />
@@ -443,8 +459,8 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                   )}
                 </div>
 
-                <div className="relative">
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <div className="relative min-w-0">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1 truncate">
                     Overtime Hours
                   </label>
                   <Input
@@ -469,7 +485,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     <button
                       type="button"
                       onClick={() => clearField(date, "overtimeHours")}
-                      className="absolute right-1.5 top-7 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute right-2 top-[2.3rem]  -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
                       aria-label="Clear OT Hours"
                     >
                       <X className="size-3.5" />
@@ -477,8 +493,8 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                   )}
                 </div>
 
-                <div className="relative">
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <div className="relative min-w-0">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1 truncate">
                     Overtime Minutes
                   </label>
                   <Input
@@ -503,7 +519,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     <button
                       type="button"
                       onClick={() => clearField(date, "overtimeMinutes")}
-                      className="absolute right-1.5 top-7 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute right-2 top-[2.3rem]  -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
                       aria-label="Clear OT Minutes"
                     >
                       <X className="size-3.5" />

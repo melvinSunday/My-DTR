@@ -1,5 +1,5 @@
 const CACHE_NAME = "dtr-cache-v1";
-const APP_SHELL = ["/", "/manifest.json", "/mydtr.ico"];
+const APP_SHELL = ["/", "/manifest.json", "/mydtr.jpg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
