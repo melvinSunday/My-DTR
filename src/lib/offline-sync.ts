@@ -163,11 +163,16 @@ export function registerBackgroundSync(): void {
 
   if (
     "serviceWorker" in navigator &&
-    "sync" in window.ServiceWorkerRegistration.prototype
+    "sync" in (window as any).ServiceWorkerRegistration.prototype
   ) {
     navigator.serviceWorker.ready
       .then((registration) => {
-        return registration.sync.register("dtr-sync");
+        const regAny = registration as unknown as {
+          sync?: { register: (tag: string) => Promise<void> };
+        };
+        if (regAny.sync && typeof regAny.sync.register === "function") {
+          return regAny.sync.register("dtr-sync");
+        }
       })
       .catch((error) => {
         console.error("[Offline] Background sync registration failed:", error);
