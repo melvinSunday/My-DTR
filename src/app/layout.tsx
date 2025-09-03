@@ -17,9 +17,9 @@ export const metadata: Metadata = {
   title: "My DTR",
   description:
     "Offline-first Daily Time Record (DTR) web application for tracking work hours, built with Next.js and IndexedDB",
-  themeColor: "#2563eb",
+  themeColor: "#8C1007",
   manifest: "/manifest.json",
-  icons: [{ rel: "icon", url: "/mydtr.ico" }],
+  icons: [{ rel: "icon", url: "/mydtr.jpg" }],
 };
 
 export default function RootLayout({
@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="theme-color" content="#2563eb" />
+        <meta name="theme-color" content="#8C1007" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/mydtr.ico" />
       </head>

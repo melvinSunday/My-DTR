@@ -23,9 +23,9 @@ export default function DTRTable({ year, month }: DTRTableProps) {
 
   // modern input styles centralized
   const baseInputClass =
-    "w-full pr-10 bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-700 rounded-lg shadow-xs";
+    "w-full pr-8 bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-700 rounded-lg shadow-xs";
   const disabledInputClass =
-    "w-full pr-10 bg-gray-100 dark:bg-neutral-800 text-gray-400 cursor-not-allowed border border-gray-200 dark:border-neutral-800 shadow-none";
+    "w-full pr-8 bg-gray-100 dark:bg-neutral-800 text-gray-400 cursor-not-allowed border border-gray-200 dark:border-neutral-800 shadow-none";
 
   useEffect(() => {
     loadEntries();
@@ -342,7 +342,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 max-[400px]:grid-cols-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="relative min-w-0">
                   <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1 truncate">
                     A.M. Arrival
@@ -364,7 +364,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     <button
                       type="button"
                       onClick={() => clearField(date, "amArrival")}
-                      className="absolute right-2 top-[2.3rem] -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute right-1.5 top-[1.63rem] inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
                       aria-label="Clear Arrival 1"
                     >
                       <X className="size-3.5" />
@@ -393,7 +393,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     <button
                       type="button"
                       onClick={() => clearField(date, "amDeparture")}
-                      className="absolute right-2 top-[2.3rem]  -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute right-1.5 top-[1.63rem] inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
                       aria-label="Clear Departure 1"
                     >
                       <X className="size-3.5" />
@@ -422,7 +422,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     <button
                       type="button"
                       onClick={() => clearField(date, "pmArrival")}
-                      className="absolute right-2 top-[2.3rem]  -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute right-1.5 top-[1.63rem] inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
                       aria-label="Clear Arrival 2"
                     >
                       <X className="size-3.5" />
@@ -451,7 +451,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     <button
                       type="button"
                       onClick={() => clearField(date, "pmDeparture")}
-                      className="absolute right-2 top-[2.3rem]  -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute right-1.5 top-[1.63rem] inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
                       aria-label="Clear Departure 2"
                     >
                       <X className="size-3.5" />
@@ -485,7 +485,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     <button
                       type="button"
                       onClick={() => clearField(date, "overtimeHours")}
-                      className="absolute right-2 top-[2.3rem]  -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute right-1.5 top-[1.63rem] inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
                       aria-label="Clear OT Hours"
                     >
                       <X className="size-3.5" />
@@ -519,7 +519,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     <button
                       type="button"
                       onClick={() => clearField(date, "overtimeMinutes")}
-                      className="absolute right-2 top-[2.3rem]  -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      className="absolute right-1.5 top-[1.63rem] inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
                       aria-label="Clear OT Minutes"
                     >
                       <X className="size-3.5" />
