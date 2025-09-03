@@ -22,8 +22,10 @@ export default function DTRTable({ year, month }: DTRTableProps) {
   const [loading, setLoading] = useState(true);
 
   // modern input styles centralized
-  const baseInputClass = "bg-white dark:bg-neutral-900 shadow-xs border-0 rounded-lg";
-  const disabledInputClass = "bg-gray-100 dark:bg-neutral-800 text-gray-400 cursor-not-allowed shadow-none";
+  const baseInputClass =
+    "bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-700 rounded-lg shadow-xs";
+  const disabledInputClass =
+    "bg-gray-100 dark:bg-neutral-800 text-gray-400 cursor-not-allowed border border-gray-200 dark:border-neutral-800 shadow-none";
 
   useEffect(() => {
     loadEntries();
@@ -88,9 +90,22 @@ export default function DTRTable({ year, month }: DTRTableProps) {
 
   const clearField = async (
     date: string,
-    field: keyof Pick<DTREntry, "amArrival" | "amDeparture" | "pmArrival" | "pmDeparture" | "overtimeHours" | "overtimeMinutes">
+    field: keyof Pick<
+      DTREntry,
+      | "amArrival"
+      | "amDeparture"
+      | "pmArrival"
+      | "pmDeparture"
+      | "overtimeHours"
+      | "overtimeMinutes"
+    >
   ) => {
-    const isTimeField = ["amArrival", "amDeparture", "pmArrival", "pmDeparture"].includes(field);
+    const isTimeField = [
+      "amArrival",
+      "amDeparture",
+      "pmArrival",
+      "pmDeparture",
+    ].includes(field);
     const newValue = isTimeField ? "" : 0;
     await handleInputChange(date, field as keyof DTREntry, newValue as any);
   };
@@ -147,45 +162,53 @@ export default function DTRTable({ year, month }: DTRTableProps) {
           </div>
         </td>
 
-        {/* a.m. arrival */}
+        {/* arrival 1 */}
         <td className="px-4 py-3">
           <Input
             type="time"
             value={entry?.amArrival || ""}
-            onChange={(e) => handleInputChange(date, "amArrival", e.target.value)}
+            onChange={(e) =>
+              handleInputChange(date, "amArrival", e.target.value)
+            }
             disabled={isWeekendDay}
             className={isWeekendDay ? disabledInputClass : baseInputClass}
           />
         </td>
 
-        {/* a.m. departure */}
+        {/* departure 1 */}
         <td className="px-4 py-3">
           <Input
             type="time"
             value={entry?.amDeparture || ""}
-            onChange={(e) => handleInputChange(date, "amDeparture", e.target.value)}
+            onChange={(e) =>
+              handleInputChange(date, "amDeparture", e.target.value)
+            }
             disabled={isWeekendDay}
             className={isWeekendDay ? disabledInputClass : baseInputClass}
           />
         </td>
 
-        {/* p.m. arrival */}
+        {/* arrival 2 */}
         <td className="px-4 py-3">
           <Input
             type="time"
             value={entry?.pmArrival || ""}
-            onChange={(e) => handleInputChange(date, "pmArrival", e.target.value)}
+            onChange={(e) =>
+              handleInputChange(date, "pmArrival", e.target.value)
+            }
             disabled={isWeekendDay}
             className={isWeekendDay ? disabledInputClass : baseInputClass}
           />
         </td>
 
-        {/* p.m. departure */}
+        {/* departure 2 */}
         <td className="px-4 py-3">
           <Input
             type="time"
             value={entry?.pmDeparture || ""}
-            onChange={(e) => handleInputChange(date, "pmDeparture", e.target.value)}
+            onChange={(e) =>
+              handleInputChange(date, "pmDeparture", e.target.value)
+            }
             disabled={isWeekendDay}
             className={isWeekendDay ? disabledInputClass : baseInputClass}
           />
@@ -309,23 +332,6 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     {dayOfWeek}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  {isWeekendDay && (
-                    <span className="px-2 py-1 text-xs bg-gray-200 dark:bg-neutral-800 text-gray-600 dark:text-gray-300 rounded-full">
-                      Weekend
-                    </span>
-                  )}
-                  {!isWeekendDay && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => clearDay(date)}
-                      className="h-7 px-2 text-xs"
-                    >
-                      Clear day
-                    </Button>
-                  )}
-                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -336,16 +342,20 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                   <Input
                     type="time"
                     value={entry?.amArrival || ""}
-                    onChange={(e) => handleInputChange(date, "amArrival", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange(date, "amArrival", e.target.value)
+                    }
                     disabled={isWeekendDay}
-                    className={isWeekendDay ? disabledInputClass : baseInputClass}
+                    className={
+                      isWeekendDay ? disabledInputClass : baseInputClass
+                    }
                   />
                   {!isWeekendDay && entry?.amArrival && (
                     <button
                       type="button"
                       onClick={() => clearField(date, "amArrival")}
                       className="absolute right-1.5 top-7 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
-                      aria-label="Clear A.M. Arrival"
+                      aria-label="Clear Arrival 1"
                     >
                       <X className="size-3.5" />
                     </button>
@@ -359,16 +369,20 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                   <Input
                     type="time"
                     value={entry?.amDeparture || ""}
-                    onChange={(e) => handleInputChange(date, "amDeparture", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange(date, "amDeparture", e.target.value)
+                    }
                     disabled={isWeekendDay}
-                    className={isWeekendDay ? disabledInputClass : baseInputClass}
+                    className={
+                      isWeekendDay ? disabledInputClass : baseInputClass
+                    }
                   />
                   {!isWeekendDay && entry?.amDeparture && (
                     <button
                       type="button"
                       onClick={() => clearField(date, "amDeparture")}
-                      className="absolute right-1.5 top-7 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
-                      aria-label="Clear A.M. Departure"
+                      className="absolute right-1.5 top-[1.6rem] inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      aria-label="Clear Departure 1"
                     >
                       <X className="size-3.5" />
                     </button>
@@ -382,16 +396,20 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                   <Input
                     type="time"
                     value={entry?.pmArrival || ""}
-                    onChange={(e) => handleInputChange(date, "pmArrival", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange(date, "pmArrival", e.target.value)
+                    }
                     disabled={isWeekendDay}
-                    className={isWeekendDay ? disabledInputClass : baseInputClass}
+                    className={
+                      isWeekendDay ? disabledInputClass : baseInputClass
+                    }
                   />
                   {!isWeekendDay && entry?.pmArrival && (
                     <button
                       type="button"
                       onClick={() => clearField(date, "pmArrival")}
                       className="absolute right-1.5 top-7 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
-                      aria-label="Clear P.M. Arrival"
+                      aria-label="Clear Arrival 2"
                     >
                       <X className="size-3.5" />
                     </button>
@@ -405,16 +423,20 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                   <Input
                     type="time"
                     value={entry?.pmDeparture || ""}
-                    onChange={(e) => handleInputChange(date, "pmDeparture", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange(date, "pmDeparture", e.target.value)
+                    }
                     disabled={isWeekendDay}
-                    className={isWeekendDay ? disabledInputClass : baseInputClass}
+                    className={
+                      isWeekendDay ? disabledInputClass : baseInputClass
+                    }
                   />
                   {!isWeekendDay && entry?.pmDeparture && (
                     <button
                       type="button"
                       onClick={() => clearField(date, "pmDeparture")}
                       className="absolute right-1.5 top-7 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
-                      aria-label="Clear P.M. Departure"
+                      aria-label="Clear Departure 2"
                     >
                       <X className="size-3.5" />
                     </button>
@@ -439,7 +461,9 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     }
                     disabled={isWeekendDay}
                     placeholder="0"
-                    className={isWeekendDay ? disabledInputClass : baseInputClass}
+                    className={
+                      isWeekendDay ? disabledInputClass : baseInputClass
+                    }
                   />
                   {!isWeekendDay && (entry?.overtimeHours ?? 0) > 0 && (
                     <button
@@ -471,7 +495,9 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     }
                     disabled={isWeekendDay}
                     placeholder="0"
-                    className={isWeekendDay ? disabledInputClass : baseInputClass}
+                    className={
+                      isWeekendDay ? disabledInputClass : baseInputClass
+                    }
                   />
                   {!isWeekendDay && (entry?.overtimeMinutes ?? 0) > 0 && (
                     <button
