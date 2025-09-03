@@ -9,6 +9,8 @@ import {
   getDayOfWeek,
 } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 interface DTRTableProps {
   year: number;
@@ -18,6 +20,10 @@ interface DTRTableProps {
 export default function DTRTable({ year, month }: DTRTableProps) {
   const [entries, setEntries] = useState<Record<string, DTREntry>>({});
   const [loading, setLoading] = useState(true);
+
+  // modern input styles centralized
+  const baseInputClass = "bg-white dark:bg-neutral-900 shadow-xs border-0 rounded-lg";
+  const disabledInputClass = "bg-gray-100 dark:bg-neutral-800 text-gray-400 cursor-not-allowed shadow-none";
 
   useEffect(() => {
     loadEntries();
@@ -80,6 +86,44 @@ export default function DTRTable({ year, month }: DTRTableProps) {
     }
   };
 
+  const clearField = async (
+    date: string,
+    field: keyof Pick<DTREntry, "amArrival" | "amDeparture" | "pmArrival" | "pmDeparture" | "overtimeHours" | "overtimeMinutes">
+  ) => {
+    const isTimeField = ["amArrival", "amDeparture", "pmArrival", "pmDeparture"].includes(field);
+    const newValue = isTimeField ? "" : 0;
+    await handleInputChange(date, field as keyof DTREntry, newValue as any);
+  };
+
+  const clearDay = async (date: string) => {
+    // reset all fields for a date
+    const dateObj = new Date(date);
+    if (isWeekend(dateObj)) return;
+
+    const resetEntry: DTREntry = {
+      date,
+      amArrival: "",
+      amDeparture: "",
+      pmArrival: "",
+      pmDeparture: "",
+      overtimeHours: 0,
+      overtimeMinutes: 0,
+      isWeekend: false,
+    };
+
+    // update local first for snappy ui
+    setEntries((prev) => ({
+      ...prev,
+      [date]: resetEntry,
+    }));
+
+    try {
+      await saveDTREntry(resetEntry);
+    } catch (error) {
+      console.error("Error clearing day:", error);
+    }
+  };
+
   const renderDayRow = (day: number) => {
     const date = formatDate(year, month, day);
     const dayOfWeek = getDayOfWeek(year, month, day);
@@ -108,13 +152,9 @@ export default function DTRTable({ year, month }: DTRTableProps) {
           <Input
             type="time"
             value={entry?.amArrival || ""}
-            onChange={(e) =>
-              handleInputChange(date, "amArrival", e.target.value)
-            }
+            onChange={(e) => handleInputChange(date, "amArrival", e.target.value)}
             disabled={isWeekendDay}
-            className={
-              isWeekendDay ? "bg-gray-100 text-gray-400 cursor-not-allowed" : ""
-            }
+            className={isWeekendDay ? disabledInputClass : baseInputClass}
           />
         </td>
 
@@ -123,13 +163,9 @@ export default function DTRTable({ year, month }: DTRTableProps) {
           <Input
             type="time"
             value={entry?.amDeparture || ""}
-            onChange={(e) =>
-              handleInputChange(date, "amDeparture", e.target.value)
-            }
+            onChange={(e) => handleInputChange(date, "amDeparture", e.target.value)}
             disabled={isWeekendDay}
-            className={
-              isWeekendDay ? "bg-gray-100 text-gray-400 cursor-not-allowed" : ""
-            }
+            className={isWeekendDay ? disabledInputClass : baseInputClass}
           />
         </td>
 
@@ -138,13 +174,9 @@ export default function DTRTable({ year, month }: DTRTableProps) {
           <Input
             type="time"
             value={entry?.pmArrival || ""}
-            onChange={(e) =>
-              handleInputChange(date, "pmArrival", e.target.value)
-            }
+            onChange={(e) => handleInputChange(date, "pmArrival", e.target.value)}
             disabled={isWeekendDay}
-            className={
-              isWeekendDay ? "bg-gray-100 text-gray-400 cursor-not-allowed" : ""
-            }
+            className={isWeekendDay ? disabledInputClass : baseInputClass}
           />
         </td>
 
@@ -153,13 +185,9 @@ export default function DTRTable({ year, month }: DTRTableProps) {
           <Input
             type="time"
             value={entry?.pmDeparture || ""}
-            onChange={(e) =>
-              handleInputChange(date, "pmDeparture", e.target.value)
-            }
+            onChange={(e) => handleInputChange(date, "pmDeparture", e.target.value)}
             disabled={isWeekendDay}
-            className={
-              isWeekendDay ? "bg-gray-100 text-gray-400 cursor-not-allowed" : ""
-            }
+            className={isWeekendDay ? disabledInputClass : baseInputClass}
           />
         </td>
 
@@ -179,9 +207,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
             }
             disabled={isWeekendDay}
             placeholder="0"
-            className={
-              isWeekendDay ? "bg-gray-100 text-gray-400 cursor-not-allowed" : ""
-            }
+            className={isWeekendDay ? disabledInputClass : baseInputClass}
           />
         </td>
 
@@ -201,9 +227,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
             }
             disabled={isWeekendDay}
             placeholder="0"
-            className={
-              isWeekendDay ? "bg-gray-100 text-gray-400 cursor-not-allowed" : ""
-            }
+            className={isWeekendDay ? disabledInputClass : baseInputClass}
           />
         </td>
       </tr>
@@ -257,7 +281,7 @@ export default function DTRTable({ year, month }: DTRTableProps) {
         </table>
       </div>
 
-      {/* mobile card view */}
+      {/* mobile card view with clear controls */}
       <div className="md:hidden">
         {Array.from({ length: daysInMonth }, (_, i) => {
           const day = i + 1;
@@ -285,91 +309,119 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     {dayOfWeek}
                   </span>
                 </div>
-                {isWeekendDay && (
-                  <span className="px-2 py-1 text-xs bg-gray-200 dark:bg-neutral-800 text-gray-600 dark:text-gray-300 rounded-full">
-                    Weekend
-                  </span>
-                )}
+                <div className="flex items-center gap-2">
+                  {isWeekendDay && (
+                    <span className="px-2 py-1 text-xs bg-gray-200 dark:bg-neutral-800 text-gray-600 dark:text-gray-300 rounded-full">
+                      Weekend
+                    </span>
+                  )}
+                  {!isWeekendDay && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => clearDay(date)}
+                      className="h-7 px-2 text-xs"
+                    >
+                      Clear day
+                    </Button>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div>
+                <div className="relative">
                   <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     A.M. Arrival
                   </label>
                   <Input
                     type="time"
                     value={entry?.amArrival || ""}
-                    onChange={(e) =>
-                      handleInputChange(date, "amArrival", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange(date, "amArrival", e.target.value)}
                     disabled={isWeekendDay}
-                    className={
-                      isWeekendDay
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : ""
-                    }
+                    className={isWeekendDay ? disabledInputClass : baseInputClass}
                   />
+                  {!isWeekendDay && entry?.amArrival && (
+                    <button
+                      type="button"
+                      onClick={() => clearField(date, "amArrival")}
+                      className="absolute right-1.5 top-7 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      aria-label="Clear A.M. Arrival"
+                    >
+                      <X className="size-3.5" />
+                    </button>
+                  )}
                 </div>
 
-                <div>
+                <div className="relative">
                   <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     A.M. Departure
                   </label>
                   <Input
                     type="time"
                     value={entry?.amDeparture || ""}
-                    onChange={(e) =>
-                      handleInputChange(date, "amDeparture", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange(date, "amDeparture", e.target.value)}
                     disabled={isWeekendDay}
-                    className={
-                      isWeekendDay
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : ""
-                    }
+                    className={isWeekendDay ? disabledInputClass : baseInputClass}
                   />
+                  {!isWeekendDay && entry?.amDeparture && (
+                    <button
+                      type="button"
+                      onClick={() => clearField(date, "amDeparture")}
+                      className="absolute right-1.5 top-7 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      aria-label="Clear A.M. Departure"
+                    >
+                      <X className="size-3.5" />
+                    </button>
+                  )}
                 </div>
 
-                <div>
+                <div className="relative">
                   <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     P.M. Arrival
                   </label>
                   <Input
                     type="time"
                     value={entry?.pmArrival || ""}
-                    onChange={(e) =>
-                      handleInputChange(date, "pmArrival", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange(date, "pmArrival", e.target.value)}
                     disabled={isWeekendDay}
-                    className={
-                      isWeekendDay
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : ""
-                    }
+                    className={isWeekendDay ? disabledInputClass : baseInputClass}
                   />
+                  {!isWeekendDay && entry?.pmArrival && (
+                    <button
+                      type="button"
+                      onClick={() => clearField(date, "pmArrival")}
+                      className="absolute right-1.5 top-7 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      aria-label="Clear P.M. Arrival"
+                    >
+                      <X className="size-3.5" />
+                    </button>
+                  )}
                 </div>
 
-                <div>
+                <div className="relative">
                   <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     P.M. Departure
                   </label>
                   <Input
                     type="time"
                     value={entry?.pmDeparture || ""}
-                    onChange={(e) =>
-                      handleInputChange(date, "pmDeparture", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange(date, "pmDeparture", e.target.value)}
                     disabled={isWeekendDay}
-                    className={
-                      isWeekendDay
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : ""
-                    }
+                    className={isWeekendDay ? disabledInputClass : baseInputClass}
                   />
+                  {!isWeekendDay && entry?.pmDeparture && (
+                    <button
+                      type="button"
+                      onClick={() => clearField(date, "pmDeparture")}
+                      className="absolute right-1.5 top-7 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      aria-label="Clear P.M. Departure"
+                    >
+                      <X className="size-3.5" />
+                    </button>
+                  )}
                 </div>
 
-                <div>
+                <div className="relative">
                   <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Overtime Hours
                   </label>
@@ -387,15 +439,21 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     }
                     disabled={isWeekendDay}
                     placeholder="0"
-                    className={
-                      isWeekendDay
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : ""
-                    }
+                    className={isWeekendDay ? disabledInputClass : baseInputClass}
                   />
+                  {!isWeekendDay && (entry?.overtimeHours ?? 0) > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => clearField(date, "overtimeHours")}
+                      className="absolute right-1.5 top-7 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      aria-label="Clear OT Hours"
+                    >
+                      <X className="size-3.5" />
+                    </button>
+                  )}
                 </div>
 
-                <div>
+                <div className="relative">
                   <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Overtime Minutes
                   </label>
@@ -413,12 +471,18 @@ export default function DTRTable({ year, month }: DTRTableProps) {
                     }
                     disabled={isWeekendDay}
                     placeholder="0"
-                    className={
-                      isWeekendDay
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : ""
-                    }
+                    className={isWeekendDay ? disabledInputClass : baseInputClass}
                   />
+                  {!isWeekendDay && (entry?.overtimeMinutes ?? 0) > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => clearField(date, "overtimeMinutes")}
+                      className="absolute right-1.5 top-7 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300"
+                      aria-label="Clear OT Minutes"
+                    >
+                      <X className="size-3.5" />
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

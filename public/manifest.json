@@ -9,7 +9,7 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/favicon.ico",
+      "src": "/mydtr.ico",
       "sizes": "any",
       "type": "image/x-icon"
     }
