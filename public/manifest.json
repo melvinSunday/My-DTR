@@ -11,7 +11,7 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/mydtr.jpg",
+      "src": "/dtr-logo.png",
       "sizes": "any",
       "type": "image/jpeg",
       "purpose": "any maskable"
@@ -41,7 +41,7 @@
   ],
   "screenshots": [
     {
-      "src": "/mydtr.jpg",
+      "src": "/dtr-logo.png",
       "sizes": "any",
       "type": "image/jpeg",
       "form_factor": "wide",

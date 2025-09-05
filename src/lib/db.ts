@@ -12,11 +12,21 @@ export interface DTREntry {
   isWeekend: boolean;
 }
 
+export interface RateSettings {
+  id?: number;
+  dailyRate: number; // Rate per day in pesos
+  updatedAt: string; // ISO date string
+}
+
 interface DTRDatabase extends DBSchema {
   dtrEntries: {
     key: number;
     value: DTREntry;
     indexes: { "by-date": string };
+  };
+  rateSettings: {
+    key: number;
+    value: RateSettings;
   };
 }
 
@@ -27,13 +37,24 @@ export async function initDB(): Promise<IDBPDatabase<DTRDatabase>> {
     return dbInstance;
   }
 
-  dbInstance = await openDB<DTRDatabase>("DTRDatabase", 1, {
-    upgrade(db) {
-      const store = db.createObjectStore("dtrEntries", {
-        keyPath: "id",
-        autoIncrement: true,
-      });
-      store.createIndex("by-date", "date", { unique: true });
+  dbInstance = await openDB<DTRDatabase>("DTRDatabase", 2, {
+    upgrade(db, oldVersion) {
+      // Create dtrEntries store if it doesn't exist
+      if (!db.objectStoreNames.contains("dtrEntries")) {
+        const store = db.createObjectStore("dtrEntries", {
+          keyPath: "id",
+          autoIncrement: true,
+        });
+        store.createIndex("by-date", "date", { unique: true });
+      }
+
+      // Create rateSettings store if it doesn't exist
+      if (!db.objectStoreNames.contains("rateSettings")) {
+        db.createObjectStore("rateSettings", {
+          keyPath: "id",
+          autoIncrement: true,
+        });
+      }
     },
   });
 
@@ -82,6 +103,149 @@ export async function clearAllDTREntries(): Promise<void> {
   const tx = db.transaction("dtrEntries", "readwrite");
   await tx.store.clear();
   await tx.done;
+}
+
+export async function saveRateSettings(rate: number): Promise<void> {
+  const db = await initDB();
+  const tx = db.transaction("rateSettings", "readwrite");
+
+  // Clear existing rate settings and save new one
+  await tx.store.clear();
+  await tx.store.add({
+    dailyRate: rate,
+    updatedAt: new Date().toISOString(),
+  });
+
+  await tx.done;
+}
+
+export async function getRateSettings(): Promise<RateSettings | undefined> {
+  const db = await initDB();
+  const allRates = await db.getAll("rateSettings");
+  return allRates[0]; // Get the latest rate setting
+}
+
+export function calculateWorkingHours(entry: DTREntry): number {
+  // Convert time strings to minutes
+  const timeToMinutes = (time: string): number => {
+    if (!time) return 0;
+    const [hours, minutes] = time.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
+  // Standard work schedule (can be adjusted)
+  const standardAmStart = timeToMinutes("08:00"); // 8:00 AM
+  const standardAmEnd = timeToMinutes("12:00"); // 12:00 PM
+  const standardPmStart = timeToMinutes("13:00"); // 1:00 PM
+  const standardPmEnd = timeToMinutes("17:00"); // 5:00 PM
+
+  let totalMinutes = 0;
+
+  // Calculate morning session if both times are present
+  if (entry.amArrival && entry.amDeparture) {
+    const amArrival = timeToMinutes(entry.amArrival);
+    const amDeparture = timeToMinutes(entry.amDeparture);
+
+    // Clamp arrival and departure to standard work hours
+    const effectiveArrival = Math.max(amArrival, standardAmStart);
+    const effectiveDeparture = Math.min(amDeparture, standardAmEnd);
+
+    const morningMinutes = effectiveDeparture - effectiveArrival;
+    if (morningMinutes > 0) {
+      totalMinutes += morningMinutes;
+    }
+  }
+
+  // Calculate afternoon session if both times are present
+  if (entry.pmArrival && entry.pmDeparture) {
+    const pmArrival = timeToMinutes(entry.pmArrival);
+    const pmDeparture = timeToMinutes(entry.pmDeparture);
+
+    // Clamp arrival and departure to standard work hours
+    const effectiveArrival = Math.max(pmArrival, standardPmStart);
+    const effectiveDeparture = Math.min(pmDeparture, standardPmEnd);
+
+    const afternoonMinutes = effectiveDeparture - effectiveArrival;
+    if (afternoonMinutes > 0) {
+      totalMinutes += afternoonMinutes;
+    }
+  }
+
+  // Convert to hours
+  return Math.max(0, totalMinutes / 60);
+}
+
+export function hasWorkingTime(entry: DTREntry): boolean {
+  // Check if there's any meaningful time entry (even partial entries count as working days)
+  return !!(
+    entry.amArrival ||
+    entry.amDeparture ||
+    entry.pmArrival ||
+    entry.pmDeparture
+  );
+}
+
+export function isCompleteWorkDay(entry: DTREntry): boolean {
+  // A complete work day has both AM and PM sessions
+  return !!(
+    entry.amArrival &&
+    entry.amDeparture &&
+    entry.pmArrival &&
+    entry.pmDeparture
+  );
+}
+
+export async function calculateMonthlyEarnings(
+  year: number,
+  month: number
+): Promise<{
+  totalEarnings: number;
+  workingDays: number;
+  completeDays: number;
+  partialDays: number;
+  totalHours: number;
+  dailyRate: number;
+}> {
+  const entries = await getDTREntriesForMonth(year, month);
+  const rateSettings = await getRateSettings();
+  const dailyRate = rateSettings?.dailyRate || 0;
+
+  let totalHours = 0;
+  let workingDays = 0;
+  let completeDays = 0;
+  let partialDays = 0;
+  let totalEarnings = 0;
+
+  // Standard work day is 8 hours (8AM-12PM, 1PM-5PM)
+  const standardWorkHours = 8;
+  const hourlyRate = dailyRate / standardWorkHours;
+
+  entries.forEach((entry) => {
+    if (!entry.isWeekend && hasWorkingTime(entry)) {
+      const hoursWorked = calculateWorkingHours(entry);
+      totalHours += hoursWorked;
+      workingDays++;
+
+      if (isCompleteWorkDay(entry)) {
+        // Complete day = full daily rate
+        completeDays++;
+        totalEarnings += dailyRate;
+      } else {
+        // Partial day = proportional rate based on hours worked
+        partialDays++;
+        totalEarnings += hoursWorked * hourlyRate;
+      }
+    }
+  });
+
+  return {
+    totalEarnings,
+    workingDays,
+    completeDays,
+    partialDays,
+    totalHours,
+    dailyRate,
+  };
 }
 
 export async function exportDTRToCSV(

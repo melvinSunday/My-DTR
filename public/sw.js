@@ -6,7 +6,7 @@ const DYNAMIC_CACHE = "dtr-dynamic-v2";
 const STATIC_ASSETS = [
   "/",
   "/manifest.json",
-  "/mydtr.jpg",
+  "/dtr-logo.png",
   "/mydtr.ico",
   "/_next/static/css/app/layout.css",
   "/_next/static/css/app/globals.css",
@@ -310,7 +310,7 @@ self.addEventListener("push", (event) => {
   const data = event.data.json();
   const options = {
     body: data.body || "DTR App notification",
-    icon: "/mydtr.jpg",
+    icon: "/dtr-logo.png",
     badge: "/mydtr.ico",
     vibrate: [200, 100, 200],
     data: data.data || {},

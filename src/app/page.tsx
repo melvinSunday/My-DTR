@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react";
 import DTRHeader from "@/components/DTRHeader";
 import DTRTable from "@/components/DTRTable";
+import EarningsCard from "@/components/EarningsCard";
 import { getCurrentMonth } from "@/lib/utils";
 import { initDB } from "@/lib/db";
 
 export default function Home() {
   const [currentDate, setCurrentDate] = useState(() => getCurrentMonth());
   const [isInitialized, setIsInitialized] = useState(false);
+  const [earningsRefreshTrigger, setEarningsRefreshTrigger] = useState(0);
 
   useEffect(() => {
     // initialize indexeddb when the app loads
@@ -30,8 +32,13 @@ export default function Home() {
   };
 
   const handleDataCleared = () => {
-    // force re-render of the table by updating the key
-    setCurrentDate((prev) => ({ ...prev }));
+    // trigger refresh without changing keys to prevent scroll jump
+    setEarningsRefreshTrigger((prev) => prev + 1);
+  };
+
+  const handleEntryChange = () => {
+    // trigger earnings refresh when time entries change
+    setEarningsRefreshTrigger((prev) => prev + 1);
   };
 
   if (!isInitialized) {
@@ -57,10 +64,16 @@ export default function Home() {
           onDataCleared={handleDataCleared}
         />
 
-        <DTRTable
-          key={`${currentDate.year}-${currentDate.month}`}
+        <EarningsCard
           year={currentDate.year}
           month={currentDate.month}
+          refreshTrigger={earningsRefreshTrigger}
+        />
+
+        <DTRTable
+          year={currentDate.year}
+          month={currentDate.month}
+          onEntryChange={handleEntryChange}
         />
       </div>
     </div>

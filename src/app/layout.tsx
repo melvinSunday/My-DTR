@@ -24,8 +24,8 @@ export const metadata: Metadata = {
   themeColor: "#8C1007",
   manifest: "/manifest.json",
   icons: [
-    { rel: "icon", url: "/mydtr.ico" },
-    { rel: "apple-touch-icon", url: "/mydtr.jpg" },
+    { rel: "icon", url: "/dtr-logo.ico" },
+    { rel: "apple-touch-icon", url: "/dtr-logo.png" },
   ],
   appleWebApp: {
     capable: true,
@@ -61,7 +61,7 @@ export default function RootLayout({
         <meta name="msapplication-tap-highlight" content="no" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/mydtr.ico" />
-        <link rel="apple-touch-icon" href="/mydtr.jpg" />
+        <link rel="apple-touch-icon" href="/dtr-logo.png" />
         <link rel="mask-icon" href="/mydtr.ico" color="#8C1007" />
       </head>
       <body

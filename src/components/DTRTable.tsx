@@ -16,9 +16,14 @@ import { X } from "lucide-react";
 interface DTRTableProps {
   year: number;
   month: number;
+  onEntryChange?: () => void;
 }
 
-export default function DTRTable({ year, month }: DTRTableProps) {
+export default function DTRTable({
+  year,
+  month,
+  onEntryChange,
+}: DTRTableProps) {
   const [entries, setEntries] = useState<Record<string, DTREntry>>({});
   const [loading, setLoading] = useState(true);
 
@@ -89,6 +94,9 @@ export default function DTRTable({ year, month }: DTRTableProps) {
       if (!navigator.onLine) {
         queueOfflineAction("save", updatedEntry);
       }
+
+      // Notify parent component about the change
+      onEntryChange?.();
     } catch (error) {
       console.error("Error saving entry:", error);
 
@@ -148,6 +156,9 @@ export default function DTRTable({ year, month }: DTRTableProps) {
       if (!navigator.onLine) {
         queueOfflineAction("save", resetEntry);
       }
+
+      // Notify parent component about the change
+      onEntryChange?.();
     } catch (error) {
       console.error("Error clearing day:", error);
 
