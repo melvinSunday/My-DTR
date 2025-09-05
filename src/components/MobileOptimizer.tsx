@@ -20,6 +20,10 @@ export default function MobileOptimizer() {
     // Initialize new enhanced mobile optimizations
     const deviceInfo = initMobileOptimizations();
 
+    // Apply additional mobile optimizations
+    MOBILE_INTERACTIONS.touch.preventPageRefresh();
+    MOBILE_INTERACTIONS.touch.optimizeInputs();
+
     // Request persistent storage for better offline experience
     requestPersistentStorage();
 

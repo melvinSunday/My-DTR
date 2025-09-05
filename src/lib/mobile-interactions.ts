@@ -49,6 +49,68 @@ export const MOBILE_INTERACTIONS = {
         }, 150);
       });
     },
+
+    // prevent page refresh on mobile
+    preventPageRefresh: () => {
+      // prevent pull-to-refresh
+      document.addEventListener(
+        "touchstart",
+        (e) => {
+          if (e.touches.length > 1) {
+            e.preventDefault();
+          }
+        },
+        { passive: false }
+      );
+
+      // prevent zoom on double tap
+      let lastTouchEnd = 0;
+      document.addEventListener(
+        "touchend",
+        (e) => {
+          const now = new Date().getTime();
+          if (now - lastTouchEnd <= 300) {
+            e.preventDefault();
+          }
+          lastTouchEnd = now;
+        },
+        { passive: false }
+      );
+
+      // prevent context menu on long press
+      document.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+      });
+    },
+
+    // optimize form inputs for mobile
+    optimizeInputs: () => {
+      const inputs = document.querySelectorAll("input, select, textarea");
+      inputs.forEach((input) => {
+        if (input instanceof HTMLElement) {
+          // prevent zoom on focus
+          input.addEventListener("focus", () => {
+            const viewport = document.querySelector('meta[name="viewport"]');
+            if (viewport) {
+              viewport.setAttribute(
+                "content",
+                "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+              );
+            }
+          });
+
+          input.addEventListener("blur", () => {
+            const viewport = document.querySelector('meta[name="viewport"]');
+            if (viewport) {
+              viewport.setAttribute(
+                "content",
+                "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+              );
+            }
+          });
+        }
+      });
+    },
   },
 
   // iOS specific optimizations

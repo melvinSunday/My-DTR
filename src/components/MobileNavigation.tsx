@@ -5,13 +5,6 @@ import { Sling as Hamburger } from "hamburger-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -25,6 +18,7 @@ import {
 import { exportDTRToCSV, clearAllDTREntries } from "@/lib/db";
 import { downloadCSV, getMonthName } from "@/lib/utils";
 import { Download, Trash2, Calendar, X } from "lucide-react";
+import MobileDatePicker from "./MobileDatePicker";
 
 interface MobileNavigationProps {
   year: number;
@@ -42,6 +36,7 @@ export default function MobileNavigation({
   const [isOpen, setIsOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   // prevent body scroll when menu is open
   useEffect(() => {
@@ -85,30 +80,13 @@ export default function MobileNavigation({
     }
   };
 
-  const handleYearChange = (newYear: number) => {
-    onDateChange(newYear, month);
-    // Don't close menu automatically - let user decide when to close
+  const handleDatePickerOpen = () => {
+    setShowDatePicker(true);
+    setIsOpen(false); // close main menu when opening date picker
   };
 
-  const handleMonthChange = (newMonth: number) => {
-    onDateChange(year, newMonth);
-    // Don't close menu automatically - let user decide when to close
-  };
-
-  const generateYearOptions = () => {
-    const currentYear = new Date().getFullYear();
-    const years = [] as number[];
-    for (let i = currentYear - 5; i <= currentYear + 5; i++) {
-      years.push(i);
-    }
-    return years;
-  };
-
-  const generateMonthOptions = () => {
-    return Array.from({ length: 12 }, (_, i) => ({
-      value: i + 1,
-      label: getMonthName(i + 1),
-    }));
+  const handleDatePickerClose = () => {
+    setShowDatePicker(false);
   };
 
   return (
@@ -197,57 +175,29 @@ export default function MobileNavigation({
                     </h3>
 
                     <div className="space-y-3">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Year
-                        </label>
-                        <Select
-                          value={year.toString()}
-                          onValueChange={(value) =>
-                            handleYearChange(parseInt(value))
-                          }
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select year" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {generateYearOptions().map((yearOption) => (
-                              <SelectItem
-                                key={yearOption}
-                                value={yearOption.toString()}
-                              >
-                                {yearOption}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                      <div className="p-4 bg-gray-50 dark:bg-neutral-800 rounded-lg">
+                        <div className="text-center">
+                          <p className="text-sm text-muted-foreground mb-2">
+                            Current Period
+                          </p>
+                          <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {getMonthName(month)} {year}
+                          </p>
+                        </div>
                       </div>
 
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Month
-                        </label>
-                        <Select
-                          value={month.toString()}
-                          onValueChange={(value) =>
-                            handleMonthChange(parseInt(value))
-                          }
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <Button
+                          onClick={handleDatePickerOpen}
+                          className="w-full justify-center h-12 text-base font-semibold bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-0 shadow-lg"
                         >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select month" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {generateMonthOptions().map((monthOption) => (
-                              <SelectItem
-                                key={monthOption.value}
-                                value={monthOption.value.toString()}
-                              >
-                                {monthOption.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                          <Calendar className="h-5 w-5 mr-2" />
+                          Change Period
+                        </Button>
+                      </motion.div>
                     </div>
                   </div>
 
@@ -314,6 +264,38 @@ export default function MobileNavigation({
                   </div>
                 </div>
               </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Date Picker Overlay */}
+      <AnimatePresence>
+        {showDatePicker && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 z-50 lg:hidden"
+              onClick={handleDatePickerClose}
+            />
+
+            {/* Date Picker Modal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed inset-0 z-50 lg:hidden flex items-center justify-center p-4"
+            >
+              <MobileDatePicker
+                year={year}
+                month={month}
+                onDateChange={onDateChange}
+                onClose={handleDatePickerClose}
+              />
             </motion.div>
           </>
         )}

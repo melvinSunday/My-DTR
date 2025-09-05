@@ -162,6 +162,40 @@ input[type="time"] {
   }
 }
 
+/* Prevent page refresh and zoom issues on mobile */
+@media (max-width: 768px) {
+  body {
+    /* Prevent pull-to-refresh */
+    overscroll-behavior-y: contain;
+    /* Prevent bounce scrolling */
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Prevent zoom on input focus */
+  input, select, textarea {
+    font-size: 16px !important;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  
+  /* Prevent text selection on buttons */
+  button, [role="button"] {
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Optimize touch interactions */
+  * {
+    touch-action: manipulation;
+  }
+  
+  /* Prevent context menu on long press */
+  * {
+    -webkit-touch-callout: none;
+  }
+}
+
 /* Print styles for better CSV export preview */
 @media print {
   body {
