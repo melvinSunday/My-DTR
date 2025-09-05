@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import DTRHeader from "@/components/DTRHeader";
+import MobileNavigation from "@/components/MobileNavigation";
+import DesktopHeader from "@/components/DesktopHeader";
 import { DTRTable } from "@/components/DTRTable";
 import EarningsCard from "@/components/EarningsCard";
 import { getCurrentMonth } from "@/lib/utils";
@@ -56,8 +57,18 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black">
+      {/* Mobile Navigation */}
+      <MobileNavigation
+        year={currentDate.year}
+        month={currentDate.month}
+        onDateChange={handleDateChange}
+        onDataCleared={handleDataCleared}
+      />
+
+      {/* Main Content */}
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <DTRHeader
+        {/* Desktop Header */}
+        <DesktopHeader
           year={currentDate.year}
           month={currentDate.month}
           onDateChange={handleDateChange}

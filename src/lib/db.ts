@@ -27,6 +27,7 @@ interface DTRDatabase extends DBSchema {
   rateSettings: {
     key: number;
     value: RateSettings;
+    indexes: { "by-date": string };
   };
 }
 
@@ -50,10 +51,11 @@ export async function initDB(): Promise<IDBPDatabase<DTRDatabase>> {
 
       // Create rateSettings store if it doesn't exist
       if (!db.objectStoreNames.contains("rateSettings")) {
-        db.createObjectStore("rateSettings", {
+        const rateStore = db.createObjectStore("rateSettings", {
           keyPath: "id",
           autoIncrement: true,
         });
+        rateStore.createIndex("by-date", "updatedAt", { unique: false });
       }
     },
   });
