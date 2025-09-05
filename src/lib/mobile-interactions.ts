@@ -56,7 +56,7 @@ export const MOBILE_INTERACTIONS = {
     // prevent bounce scrolling on iOS
     preventBounce: () => {
       document.body.style.overscrollBehavior = "none";
-      document.body.style.webkitOverflowScrolling = "touch";
+      (document.body.style as any).webkitOverflowScrolling = "touch";
     },
 
     // fix iOS viewport height issues
