@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import DTRHeader from "@/components/DTRHeader";
-import DTRTable from "@/components/DTRTable";
+import { DTRTable } from "@/components/DTRTable";
 import EarningsCard from "@/components/EarningsCard";
 import { getCurrentMonth } from "@/lib/utils";
 import { initDB } from "@/lib/db";
@@ -26,20 +26,20 @@ export default function Home() {
     initialize();
   }, []);
 
-  const handleDateChange = (year: number, month: number) => {
+  const handleDateChange = useCallback((year: number, month: number) => {
     // update selected month/year
     setCurrentDate({ year, month });
-  };
+  }, []);
 
-  const handleDataCleared = () => {
+  const handleDataCleared = useCallback(() => {
     // trigger refresh without changing keys to prevent scroll jump
     setEarningsRefreshTrigger((prev) => prev + 1);
-  };
+  }, []);
 
-  const handleEntryChange = () => {
+  const handleEntryChange = useCallback(() => {
     // trigger earnings refresh when time entries change
     setEarningsRefreshTrigger((prev) => prev + 1);
-  };
+  }, []);
 
   if (!isInitialized) {
     return (

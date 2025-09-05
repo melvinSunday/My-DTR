@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -34,11 +34,8 @@ export default function EarningsCard({
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
-    loadRateAndCalculateEarnings();
-  }, [year, month, refreshTrigger]);
-
-  const loadRateAndCalculateEarnings = async () => {
+  // memoize the load function to prevent unnecessary re-creations
+  const loadRateAndCalculateEarnings = useCallback(async () => {
     setIsLoading(true);
     try {
       const rateSettings = await getRateSettings();
@@ -53,9 +50,13 @@ export default function EarningsCard({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [year, month]);
 
-  const handleSaveRate = async () => {
+  useEffect(() => {
+    loadRateAndCalculateEarnings();
+  }, [loadRateAndCalculateEarnings, refreshTrigger]);
+
+  const handleSaveRate = useCallback(async () => {
     const rate = parseFloat(dailyRate);
     if (isNaN(rate) || rate < 0) {
       alert("Please enter a valid rate amount");
@@ -72,15 +73,31 @@ export default function EarningsCard({
     } finally {
       setIsSaving(false);
     }
-  };
+  }, [dailyRate, loadRateAndCalculateEarnings]);
 
-  const formatCurrency = (amount: number) => {
+  // memoize currency formatting to prevent unnecessary re-calculations
+  const formatCurrency = useCallback((amount: number) => {
     return new Intl.NumberFormat("en-PH", {
       style: "currency",
       currency: "PHP",
       minimumFractionDigits: 2,
     }).format(amount);
-  };
+  }, []);
+
+  // memoize formatted earnings values to prevent unnecessary re-calculations
+  const formattedEarnings = useMemo(
+    () => ({
+      totalEarnings: formatCurrency(earnings.totalEarnings),
+      dailyRate: formatCurrency(earnings.dailyRate),
+      totalHours: earnings.totalHours.toFixed(1),
+    }),
+    [
+      earnings.totalEarnings,
+      earnings.dailyRate,
+      earnings.totalHours,
+      formatCurrency,
+    ]
+  );
 
   if (isLoading) {
     return (
@@ -359,7 +376,7 @@ export default function EarningsCard({
                   transition={{ duration: 0.3 }}
                   className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400"
                 >
-                  {formatCurrency(earnings.totalEarnings)}
+                  {formattedEarnings.totalEarnings}
                 </motion.p>
               </motion.div>
 
@@ -524,10 +541,10 @@ export default function EarningsCard({
                   transition={{ duration: 0.3 }}
                   className="text-lg sm:text-xl font-bold text-orange-600 dark:text-orange-400"
                 >
-                  {earnings.totalHours.toFixed(1)}h
+                  {formattedEarnings.totalHours}h
                 </motion.p>
                 <p className="text-xs text-orange-600/70 dark:text-orange-400/70 mt-1 font-medium">
-                  @ {formatCurrency(earnings.dailyRate)}/day
+                  @ {formattedEarnings.dailyRate}/day
                 </p>
               </motion.div>
             </div>
