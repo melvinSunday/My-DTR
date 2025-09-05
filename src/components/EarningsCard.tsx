@@ -179,8 +179,7 @@ export default function EarningsCard({
                 {earnings.completeDays}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                Full rate:{" "}
-                {formatCurrency(earnings.completeDays * earnings.dailyRate)}
+                Time-based earnings
               </p>
             </div>
             <div className="bg-gray-50 dark:bg-neutral-800 rounded-lg p-4">
@@ -189,11 +188,7 @@ export default function EarningsCard({
                 {earnings.partialDays}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                Est:{" "}
-                {formatCurrency(
-                  earnings.totalEarnings -
-                    earnings.completeDays * earnings.dailyRate
-                )}
+                Time-based earnings
               </p>
             </div>
             <div className="bg-gray-50 dark:bg-neutral-800 rounded-lg p-4">
@@ -211,11 +206,13 @@ export default function EarningsCard({
           {(earnings.completeDays > 0 || earnings.partialDays > 0) && (
             <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
               <p className="text-sm text-blue-800 dark:text-blue-200">
-                💡 <strong>Earnings Breakdown:</strong> Complete days (AM + PM
-                entries) earn full daily rate. Partial days are calculated
-                proportionally based on standard work hours (8AM-12PM, 1PM-5PM =
-                ₱{(earnings.dailyRate / 8).toFixed(2)}/hour). Early arrivals
-                don't increase earnings.
+                💡 <strong>Earnings Calculation:</strong> All earnings are
+                calculated based on actual hours worked within standard work
+                hours (8AM-12PM, 1PM-5PM = ₱
+                {(earnings.dailyRate / 8).toFixed(2)}/hour). Complete days show
+                you have all 4 time entries, but earnings still depend on actual
+                time worked. Early arrivals don't increase earnings, and late
+                arrivals reduce earnings.
               </p>
             </div>
           )}

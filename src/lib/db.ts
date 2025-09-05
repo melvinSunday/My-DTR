@@ -147,6 +147,8 @@ export function calculateWorkingHours(entry: DTREntry): number {
     const amDeparture = timeToMinutes(entry.amDeparture);
 
     // Clamp arrival and departure to standard work hours
+    // Early arrival (before 8:00 AM) doesn't increase earnings
+    // Late arrival (after 8:00 AM) reduces working hours and earnings
     const effectiveArrival = Math.max(amArrival, standardAmStart);
     const effectiveDeparture = Math.min(amDeparture, standardAmEnd);
 
@@ -162,6 +164,8 @@ export function calculateWorkingHours(entry: DTREntry): number {
     const pmDeparture = timeToMinutes(entry.pmDeparture);
 
     // Clamp arrival and departure to standard work hours
+    // Late arrival (after 1:00 PM) reduces working hours and earnings
+    // Early departure (before 5:00 PM) also reduces working hours and earnings
     const effectiveArrival = Math.max(pmArrival, standardPmStart);
     const effectiveDeparture = Math.min(pmDeparture, standardPmEnd);
 
@@ -226,14 +230,13 @@ export async function calculateMonthlyEarnings(
       totalHours += hoursWorked;
       workingDays++;
 
+      // Always calculate earnings based on actual hours worked
+      totalEarnings += hoursWorked * hourlyRate;
+
       if (isCompleteWorkDay(entry)) {
-        // Complete day = full daily rate
         completeDays++;
-        totalEarnings += dailyRate;
       } else {
-        // Partial day = proportional rate based on hours worked
         partialDays++;
-        totalEarnings += hoursWorked * hourlyRate;
       }
     }
   });
