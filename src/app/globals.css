@@ -121,6 +121,47 @@ input[type="time"] {
   }
 }
 
+/* Touch feedback styles for mobile interactions */
+.touch-active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+/* Enhanced mobile input styles */
+@media (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px; /* prevents zoom on iOS */
+  }
+  
+  /* Better touch targets for mobile */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Smooth touch interactions */
+  button, input, select, textarea {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
+
+/* Keyboard open styles */
+.keyboard-open {
+  padding-bottom: env(keyboard-inset-height, 0px);
+}
+
+/* Enhanced focus styles for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .focus-visible {
+    outline: 3px solid #3b82f6;
+    outline-offset: 2px;
+  }
+}
+
 /* Print styles for better CSV export preview */
 @media print {
   body {
